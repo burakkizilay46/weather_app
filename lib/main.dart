@@ -11,7 +11,7 @@ void main() {
 String url =
     "https://api.openweathermap.org/data/2.5/weather?q=Kızıltepe&appid=3bd5ba9c630e384ffbf8de1f536042fe";
 
-    WeatherModel weather = WeatherModel();
+WeatherModel weather = WeatherModel();
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -38,17 +38,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   Future<void> _incrementCounter() async {
     http.Response response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      
       Map responseJSON = jsonDecode(response.body);
 
-      weather.name = responseJSON['name'].toString();   
-      weather.weather = responseJSON['weather']['main'].toString();   
-      weather.temperature = responseJSON['main']['temp'].toString();   
+      weather.name = responseJSON['name'].toString();
+      weather.weather = responseJSON['weather'][0]['main'].toString();
+      weather.temperature = responseJSON['main']['temp'].toString();
     } else {
       "Baglantida sorun olustu!!";
     }
@@ -76,10 +74,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FutureBuilder(
               future: http.get(Uri.parse(url)),
-              builder: (context, snapshot){
+              builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   _incrementCounter();
-                  return Text(weather.weather.toString() , style: TextStyle(fontSize: 24),);
+                  return Column(
+                    children: [
+                      Text(
+                          weather.temperature.toString() + "\n"+
+                              weather.name.toString() + "\n" +
+                              weather.weather.toString(),
+                          style: TextStyle(fontSize: 24)),
+                    ],
+                  );
                 } else {
                   return Center(
                     child: CircularProgressIndicator(),
