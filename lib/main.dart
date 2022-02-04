@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:weather_app/WeatherModel.dart';
+import 'model/WeatherModel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,38 +20,88 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  void weatherIcon() {
+    switch (weather.weather) {
+      case "clear sky":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "few clouds":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "scattered clouds":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "broken clouds":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "shower rain":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "rain":
+        {
+          const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "thunderstorm":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "snow":
+        {
+         const Icon(Icons.wb_sunny);
+        }
+        break;
+      case "mist":
+        {
+          const Icon(Icons.wb_sunny);
+        }
+        break;
+
+      default:
+        {
+          const Icon(Icons.wb_sunny);
+        }
+        break;
+    }
+  }
+
   Future<void> _incrementCounter() async {
     http.Response response = await http.get(Uri.parse(url));
 
-    if (response.statusCode == 200) {
+    try {
       Map responseJSON = jsonDecode(response.body);
 
       weather.name = responseJSON['name'].toString();
       weather.weather = responseJSON['weather'][0]['main'].toString();
       weather.temperature = responseJSON['main']['temp'].toString();
-      temp = int.parse(weather.temperature.toString()) - 273;
-    } else {
-      "Baglantida sorun olustu!!";
+      //temp = int.parse(weather.temperature.toString()) - 273;
+    } catch (e) {
+      print(e);
     }
+
     setState(() {});
   }
 
@@ -64,44 +114,48 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.lightBlue[900],
       appBar: AppBar(
-        title: Text(widget.title),
+        centerTitle: true,
+        title: Text("Weather App"),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            FutureBuilder(
-              future: http.get(Uri.parse(url)),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _incrementCounter();
-                  return Column(
+        child: FutureBuilder(
+          future: http.get(Uri.parse(url)),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              //_incrementCounter();
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Kızıltepe",
+                      Text("Kızıltepe  ",
                           style: Theme.of(context)
                               .textTheme
                               .headline4!
-                              .copyWith(fontSize: 48)),
-                      Text("8 C" , style: Theme.of(context).textTheme.headline5!.copyWith(fontSize: 36)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Clouds" , style: Theme.of(context).textTheme.headline5!.copyWith(fontSize: 36)),
-                          Container(
-                            child: Icon(Icons.cloud_sharp , size: 50,),
-                          ),
-                        ],
+                              .copyWith(fontSize: 48, color: Colors.white)),
+                      Icon(
+                        Icons.cloud_sharp,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.15,
                       ),
                     ],
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ],
+                  ),
+                  Text("8 Derece",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontSize: 36, color: Colors.white)),
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       ),
     );
@@ -115,3 +169,43 @@ class _MyHomePageState extends State<MyHomePage> {
 //        "\n" +
 //        weather.weather.toString(),
 //    style: TextStyle(fontSize: 24)),
+
+
+/*
+switch (weather.weather) {
+      case "clear sky":
+        {}
+        break;
+      case "few clouds":
+        {}
+        break;
+      case "scattered clouds":
+        {}
+        break;
+      case "broken clouds":
+        {}
+        break;
+      case "shower rain":
+        {}
+        break;
+        case "rain":
+        {}
+        break;
+        case "thunderstorm":
+        {}
+        break;
+        case "snow":
+        {}
+        break;
+        case "mist":
+        {}
+        break;
+
+      default:
+        {
+          //statements;
+        }
+        break;
+    }
+    
+    */
